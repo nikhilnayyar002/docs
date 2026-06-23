@@ -1,0 +1,12 @@
+
+- libraries for react
+    - material UI https://v6.mui.com/material-ui/getting-started/
+    - unstyled https://base-ui.com/
+- libraries for frameworks
+  - unstyled, rich components https://ark-ui.com/
+  - unstyled, https://headlessui.com/
+- web components
+  - basic https://lit.dev/
+  - built https://lion.js.org/
+- floating/positioning elements libs
+  - https://floating-ui.com/
