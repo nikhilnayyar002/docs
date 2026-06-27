@@ -1,6 +1,6 @@
 https://www.typescriptlang.org/
 
-- [1. The TypeScript Handbook](#1-the-typescript-handbook)
+- [1. Handbook](#1-handbook)
   - [1.1. The Basics](#11-the-basics)
   - [1.2. Everyday Types](#12-everyday-types)
   - [1.3. Narrowing](#13-narrowing)
@@ -29,9 +29,11 @@ https://www.typescriptlang.org/
   - [3.3. Modules - Reference](#33-modules---reference)
 - [4. Declaration Files](#4-declaration-files)
   - [4.1. Declaration Reference](#41-declaration-reference)
+- [5. Project Configuration](#5-project-configuration)
+  - [5.1. Project References](#51-project-references)
 
 
-# 1. The TypeScript Handbook
+# 1. Handbook
 
 ## 1.1. The Basics
 
@@ -1011,3 +1013,31 @@ declare function greet(greeting: string): void;
 **Consumption**
 
 ...
+
+# 5. Project Configuration
+
+## 5.1. Project References
+
+> My note
+>
+>  Without project references, the TypeScript compiler (tsc) has to parse and type-check your entire codebase every time you run a build, even if you only changed one line in a tiny utility file.
+>
+>  TypeScript project references enable incremental builds (using `tsc -b`). It caches the build outputs of your sub-projects. If you modify a leaf project, only that project and the ones that directly import it are re-checked. The rest of the tree reuses its cached type definitions
+>
+> In a large repository, a shared library shouldn't import from an application. Project references strictly enforce dependency graphs.
+>
+>  By segmenting the code into smaller, defined configurations, your editor loads fewer files into memory at once, giving you drastically faster autocomplete.
+>
+
+https://www.typescriptlang.org/docs/handbook/project-references.html
+
+...
+
+**Build Mode for TypeScript**
+
+...
+
+**Overall Structure**
+
+...
+

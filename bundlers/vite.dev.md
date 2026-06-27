@@ -27,8 +27,7 @@ During development, Vite assumes that a modern browser is used (esnext). For pro
 https://vite.dev/guide/#trying-vite-online
 
 ```bash
-npm create vite@latest my-vue-app -- --template vue
-npm create vite@latest . -- --template react
+npm create vite@latest .
 ```
 
 https://vite.dev/guide/#community-templates
