@@ -1,5 +1,7 @@
 https://tailwindcss.com/docs
 
+v4.3
+
 - [1. Core concepts](#1-core-concepts)
   - [1.1. Styling with utility classes (tailwind overview)](#11-styling-with-utility-classes-tailwind-overview)
   - [1.2. Hover, focus, and other states](#12-hover-focus-and-other-states)
@@ -10,9 +12,25 @@ https://tailwindcss.com/docs
     - [1.2.5. Child selectors](#125-child-selectors)
     - [1.2.6. Custom variants](#126-custom-variants)
     - [1.2.7. Quick reference](#127-quick-reference)
-  - [Responsive design](#responsive-design)
-    - [Using custom breakpoints](#using-custom-breakpoints)
-    - [Container queries](#container-queries)
+  - [1.3. Responsive design](#13-responsive-design)
+    - [1.3.1. Using custom breakpoints](#131-using-custom-breakpoints)
+    - [1.3.2. Container queries](#132-container-queries)
+  - [1.4. Dark mode](#14-dark-mode)
+  - [1.5. Theme variables](#15-theme-variables)
+    - [1.5.1. Overview](#151-overview)
+    - [1.5.2. Customizing your theme](#152-customizing-your-theme)
+    - [1.5.3. Using your theme variables](#153-using-your-theme-variables)
+  - [1.6. Colors](#16-colors)
+  - [1.7. Adding custom styles](#17-adding-custom-styles)
+    - [1.7.1. Using arbitrary values](#171-using-arbitrary-values)
+    - [1.7.2. Using custom CSS](#172-using-custom-css)
+    - [1.7.3. Adding custom utilities](#173-adding-custom-utilities)
+  - [1.8. Detecting classes in source files](#18-detecting-classes-in-source-files)
+  - [1.9. Functions and directives](#19-functions-and-directives)
+    - [1.9.1. Directives](#191-directives)
+    - [1.9.2. Functions](#192-functions)
+- [2. Base styles](#2-base-styles)
+  - [2.1. Preflight](#21-preflight)
 
 
 # 1. Core concepts
@@ -209,7 +227,7 @@ Learn more about adding custom variants in the [adding custom variants documenta
 
 ### 1.2.7. [Quick reference](https://tailwindcss.com/docs/hover-focus-and-other-states#quick-reference)
 
-## Responsive design
+## 1.3. Responsive design
 
 ```html
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -233,7 +251,7 @@ If you'd like to apply a utility only when a specific breakpoint range is active
 <div class="md:max-xl:flex">
 ```
 
-### Using custom breakpoints
+### 1.3.1. Using custom breakpoints
 
 **Customizing your theme**
 ```css
@@ -253,7 +271,313 @@ use the min or max variants to generate a custom breakpoint on the fly
 <div class="max-[600px]:bg-sky-300 min-[320px]:text-center">
 ```
 
-### [Container queries](https://tailwindcss.com/docs/responsive-design#container-queries)
+### 1.3.2. [Container queries](https://tailwindcss.com/docs/responsive-design#container-queries)
 
 ...
 
+## 1.4. Dark mode
+
+...
+
+[**Toggling dark mode manually**](https://tailwindcss.com/docs/dark-mode#toggling-dark-mode-manually)
+
+If you want your dark theme to be driven by a CSS selector instead of the `prefers-color-scheme` media query, override the dark variant to use your custom selector:
+```css
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+```
+Now instead of `dark:*` utilities being applied based on `prefers-color-scheme`, they will be applied whenever the `dark` class is present earlier in the HTML tree:
+```html
+<html class="dark">
+  <body>
+    <div class="bg-white dark:bg-black">
+```
+
+To build three-way theme toggles that support light, dark, and system theme:
+
+https://tailwindcss.com/docs/dark-mode#with-system-theme-support
+
+## 1.5. Theme variables
+
+### 1.5.1. Overview
+
+you can add a new color to your project by defining a theme variable like:
+```css
+@theme { --color-mint-500: oklch(0.72 0.11 178); }
+```
+Now you can use utility classes like `bg-mint-500`, `text-mint-500`, or `fill-mint-500` and CSS variable `--color-mint-500`
+
+Some theme variables are used to define variants rather than utilities (eg: `--breakpoint-*`)
+
+https://tailwindcss.com/docs/theme#theme-variable-namespaces
+
+https://tailwindcss.com/docs/theme#default-theme-variable-reference
+
+### 1.5.2. Customizing your theme
+
+Override a default theme variable value by redefining it within `@theme`.
+
+To completely override an entire namespace in the default theme, set the entire namespace to `initial`.
+```css
+@theme { --color-*: initial; --color-white: #fff;}
+```
+all of the default utilities that use that namespace (like `bg-red-500`) will be removed
+
+To completely disable the default theme:
+```css
+@theme { --*: initial; /*... custom values */ }
+```
+
+**Defining animation keyframes**
+
+Define the `@keyframes` rules for your `--animate-*` theme variables within `@theme` to use it as a animate class:
+```css
+@theme {
+  --animate-fade-in-scale: fade-in-scale 0.3s ease-out;
+  @keyframes fade-in-scale { ... }
+}
+```
+
+**Referencing other variables**
+```css
+@theme inline { --font-sans: var(--font-inter); } /*  use the inline option */
+```
+
+**Generating all CSS variables**
+
+By default only used CSS variables will be generated in the final CSS output. If you want to always generate all CSS variables:
+```css
+@theme static { --color-primary: var(--color-red-500); }
+```
+
+**Sharing across projects**
+
+```css
+/* ./packages/brand/theme.css */
+@theme { ... }
+
+/* ./packages/admin/app.css */
+@import "tailwindcss";
+@import "../brand/theme.css";
+```
+
+### 1.5.3. Using your theme variables
+
+**With arbitrary values**
+```html
+<div class="absolute inset-px rounded-[calc(var(--radius-xl)-1px)]">
+```
+
+## 1.6. [Colors](https://tailwindcss.com/docs/colors)
+
+Use color utilities like `bg-white`, `border-pink-300`, `text-gray-950` etc
+
+full list of utilities: https://tailwindcss.com/docs/colors#using-color-utilities
+
+[**Adjusting opacity**](https://tailwindcss.com/docs/colors#adjusting-opacity)
+```html
+<div class="bg-sky-500/10">
+<div class="bg-pink-500/[71.37%]">
+<div class="bg-cyan-400/(--my-alpha-value)">
+```
+in css you can use [alpha funtion](https://tailwindcss.com/docs/functions-and-directives#alpha-function)
+
+## 1.7. Adding custom styles
+
+### 1.7.1. Using arbitrary values
+
+```html
+<div class="top-[117px] lg:top-[344px]">
+<div class="bg-[#bada55] text-[22px] before:content-['Festivus']">
+<div class="fill-(--my-brand-color) ..."> <!-- shorthand for fill-[var(--my-brand-color)] -->
+
+<!-- Arbitrary properties -->
+<div class="[mask-type:luminance] hover:[mask-type:alpha]">
+<div class="[--scroll-offset:56px] lg:[--scroll-offset:44px]">
+
+<!-- Arbitrary variants -->
+<li class="lg:[&:nth-child(-n+3)]:hover:underline">
+```
+
+**Handling whitespace**
+```html
+<!-- Handling whitespace, use _ -->
+<div class="grid grid-cols-[1fr_500px_2fr]">
+
+<!-- In situations where _ is common but spaces are invalid, Tailwind will preserve _ -->
+<div class="bg-[url('/what_a_rush.png')]">
+
+<!-- In the rare case when it's ambiguous, escape the _ -->
+<div class="before:content-['hello\_world']">
+```
+If you're using something like JSX where the backslash is stripped from the rendered HTML:
+```jsx
+<div className={String.raw`before:content-['hello\_world']`}>
+```
+
+**Resolving ambiguities**
+```html
+<div class="text-[22px]"> <!-- Will generate a font-size utility -->
+<div class="text-[#bada55]"> <!-- Will generate a color utility -->
+<div class="text-(--my-var)"> <!-- ambiguous -->
+<!-- https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Types -->
+<div class="text-(length:--my-var)"> <!-- Will generate a font-size utility -->
+<div class="text-(color:--my-var)">  <!-- Will generate a color utility -->
+```
+
+### 1.7.2. Using custom CSS
+
+**Adding base styles**
+```html
+<html lang="en" class="bg-gray-100 font-serif text-gray-900">
+```
+If you want to add your own default base styles for specific HTML elements, use the `@layer` directive to add those styles to Tailwind's `base` layer:
+```css
+@layer base { h1 { font-size: var(--text-2xl); } }
+```
+
+**Adding component classes**
+
+Use the `components` layer for any more complicated classes you want to add to your project
+```css
+@layer components { .card { ... } }
+```
+```html
+<div class="card rounded-none">
+```
+The components layer is also a good place to put custom styles for any third-party components you're using
+
+**Using variants**
+```css
+.my-element {
+  background: white;
+  @variant dark { background: black; }
+  @variant hover:focus { background: black; }
+  @variant hover, focus {
+    background: black;
+  }
+}
+/* Compiled CSS */
+.my-element { ...
+  @media (prefers-color-scheme: dark) { background: black; }
+  
+  &:hover {
+    @media (hover: hover) {
+      &:focus {
+        background: black;
+      }
+    }
+  }
+
+  &:hover { @media (hover: hover) { background: black; } }
+  &:focus { background: black; }
+}
+```
+
+### 1.7.3. Adding custom utilities
+
+```css
+@utility content-auto { content-visibility: auto; }
+@utility scrollbar-hidden { &::-webkit-scrollbar { display: none; } }
+```
+```html
+<div class="hover:content-auto">
+```
+
+[**Functional utilities**](https://tailwindcss.com/docs/adding-custom-styles#functional-utilities)
+```css
+@utility tab-* { tab-size: --value(integer); }
+```
+...
+
+## 1.8. Detecting classes in source files
+
+Tailwind treats all of your source files as plain text. it just looks for any tokens in your file that could be classes based on which characters Tailwind is expecting in class names.
+
+it has no way of understanding string concatenation or interpolation in the programming language you're using.
+```html
+<!-- Don't construct class names dynamically -->
+<div class="text-{{ error ? 'red' : 'green' }}-600"></div>
+<!-- Always use complete class names -->
+<div class="{{ error ? 'text-red-600' : 'text-green-600' }}"></div>
+```
+```jsx
+function Button({ color, children }) {
+  const colorVariants = {
+    blue: "bg-blue-600 hover:bg-blue-500 text-white",
+    red: "bg-red-500 hover:bg-red-400 text-white",
+  };
+  return <button className={`${colorVariants[color]} ...`}>{children}</button>;
+}
+```
+
+[**Which files are scanned**](https://tailwindcss.com/docs/detecting-classes-in-source-files#which-files-are-scanned
+)
+
+**Explicitly registering sources**
+```css
+@import "tailwindcss";
+@source "../node_modules/@acmecorp/ui-lib";
+```
+
+**Setting your base path**
+
+suppose your CSS file is nested inside `src/styles/index.css`. If you want tailwind to only scan within `src`, you must step up two directories using `../../src` so the compiler can correctly resolve the path to the main `src/` folder from where the stylesheet sits.
+```css
+@import "tailwindcss" source("../../src"); 
+```
+
+**Ignoring specific paths**
+```css
+@import "tailwindcss";
+@source not "../../src/components/legacy";
+```
+This is useful when you have large directories in your project that you know don't use Tailwind classes
+
+**Disabling automatic detection**
+
+to completely disable automatic source detection and register all of your sources explicitly:
+```css
+@import "tailwindcss" source(none);
+@source "../admin";
+```
+
+[**Safelisting specific utilities**](https://tailwindcss.com/docs/detecting-classes-in-source-files#safelisting-specific-utilities)
+
+If you need to make sure Tailwind generates certain class names that don’t exist in your content files, force them to be generated
+
+...
+
+## 1.9. [Functions and directives](https://tailwindcss.com/docs/functions-and-directives)
+
+### 1.9.1. Directives
+
+...
+
+**@apply**
+
+Use the directive to inline any existing utility classes into your own custom CSS:
+```css
+.select2-dropdown {
+  @apply rounded-b-lg shadow-md;
+}
+```
+
+[**@reference**](https://tailwindcss.com/docs/functions-and-directives#reference-directive)
+
+If you want to use `@apply` or `@variant` in the `<style>` block of a Vue or Svelte component, or within CSS modules, you will need to import your theme variables, custom utilities, and custom variants to make those values available in that context.
+
+To do this without duplicating any CSS in your output, use the `@reference` directive to import your main stylesheet for reference without actually including the styles:
+```css
+@reference "../../app.css";
+```
+If you’re just using the default theme with no customizations (e.g. by using things like `@theme`, `@custom-variant`, etc…), you can import `tailwindcss` directly:
+```css
+@reference "tailwindcss";
+```
+
+### 1.9.2. [Functions](https://tailwindcss.com/docs/functions-and-directives#functions)
+
+# 2. Base styles
+
+## 2.1. [Preflight](https://tailwindcss.com/docs/preflight)
