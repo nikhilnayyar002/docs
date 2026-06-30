@@ -1,3 +1,10 @@
+
+- [1. Structure](#1-structure)
+- [2. How to commit](#2-how-to-commit)
+
+
+# 1. Structure
+
 Commit message must follow this [structure](https://www.conventionalcommits.org/en/v1.0.0/):
 
 ```txt
@@ -96,3 +103,15 @@ Fixes #10
 - The Header Line well under the 50-character ceiling
 - The Long Body Text: Instead of letting the text stretch infinitely across the screen, every single line breaks cleanly at or before the 72-character mark.
 - The Breaking Change Footer: multi-line migration instructions are wrapped cleanly within the 72-character boundary line limit
+
+# 2. How to commit
+
+set vscode or whatever as default editor to input your commit message
+```bash
+git config --global core.editor "code --wait"
+```
+
+commit your message
+```bash
+git commit
+```
